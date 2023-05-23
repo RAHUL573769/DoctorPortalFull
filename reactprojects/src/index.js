@@ -8,15 +8,19 @@ import { format } from "date-fns";
 import { DayPicker } from "react-day-picker";
 
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
+import AuthProvider, { AuthContext } from "./AuthProvider/AuthProvider";
 
 const queryClient = new QueryClient();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <App />
-    </QueryClientProvider>
+    <AuthProvider>
+      {" "}
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
+    </AuthProvider>
   </React.StrictMode>
 );
 

@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
+import { AuthContext } from "../../AuthProvider/AuthProvider";
+import { GoogleAuthProvider } from "firebase/auth";
 
 const SignUp = () => {
   const {
@@ -7,8 +9,49 @@ const SignUp = () => {
     handleSubmit,
     formState: { errors }
   } = useForm();
-  const onSubmit = (data) => console.log(data);
 
+  const { auth, signInGooglePopUp, createUser } = useContext(AuthContext);
+  const provider1 = new GoogleAuthProvider();
+  const onSubmit = (data) => {
+    console.log(data);
+
+    createUser(data.email, data.password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user);
+        // ...
+      })
+      .catch((error) => {
+        console.log(error);
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ..
+      });
+  };
+
+  const handleGoogleSignUp = () => {
+    signInGooglePopUp(auth, provider1)
+      .then((result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+
+        // The signed-in user info.
+        const user = result.user;
+        console.log(user);
+        // IdP data available using getAdditionalUserInfo(result)
+        // ...
+      })
+      .catch((error) => {
+        console.log(error);
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // The email of the user's account used.
+
+        // The AuthCredential type that was used.
+        // ...
+      });
+  };
   return (
     <div className=" h-[800px] flex justify-center items-center">
       <div>
@@ -67,6 +110,7 @@ const SignUp = () => {
             Button
           </button>
         </form>
+        <button onClick={handleGoogleSignUp}>Continue with Google</button>
       </div>
     </div>
   );
