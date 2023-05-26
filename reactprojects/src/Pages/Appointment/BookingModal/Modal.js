@@ -1,11 +1,28 @@
 import { format } from "date-fns";
-import React from "react";
+import React, { useContext } from "react";
+import { AuthContext } from "../../../AuthProvider/AuthProvider";
 
 const Modal = ({ treatments, selected }) => {
   const { name, slots } = treatments;
-
+  const { currentUser } = useContext(AuthContext);
+  console.log(currentUser);
   const date = format(selected, "PP");
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const slot = e.target.slot.value;
+    const email = e.target.email.value;
+    const name = e.target.name.value;
+    const phone = e.target.phone.value;
 
+    const booking = {
+      selectedDate: date,
+      name,
+      slot,
+      email,
+      phone
+    };
+    console.log(booking);
+  };
   return (
     <div>
       <input type="checkbox" id="my-modal-3" className="modal-toggle" />
@@ -19,7 +36,7 @@ const Modal = ({ treatments, selected }) => {
           </label>
           <h3 className="text-lg font-bold">{name}</h3>
           <p className="py-4">
-            <form className="grid gap-6" action="">
+            <form onSubmit={handleSubmit} className="grid gap-6" action="">
               <input
                 type="text"
                 disabled
@@ -40,7 +57,9 @@ const Modal = ({ treatments, selected }) => {
               />
               <input
                 type="text"
+                disabled
                 name="email"
+                value={currentUser.email}
                 placeholder="Type here"
                 className="input w-full"
               />

@@ -14,6 +14,7 @@ const SingleAppointment = ({ appointment, setTreatments }) => {
           </p>
           <div className="card-actions">
             <label
+              disabled={slots.length === 0}
               onClick={() => {
                 setTreatments(appointment);
               }}
