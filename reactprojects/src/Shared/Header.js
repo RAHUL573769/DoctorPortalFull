@@ -1,7 +1,23 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../AuthProvider/AuthProvider";
+import { signOut } from "firebase/auth";
+import PrivateRoute from "../PrivateRoutes/PrivateRoute";
 
 const Header = () => {
+  const { currentUser, auth, logOut } = useContext(AuthContext);
+  console.log(currentUser);
+  const handleSignOut = () => {
+    logOut()
+      .then(() => {
+        // Sign-out successful.
+        console.log("Sinout Succcesful");
+      })
+      .catch((error) => {
+        // An error happened.
+        console.log(error);
+      });
+  };
   const menItems = (
     <>
       {" "}
@@ -18,8 +34,18 @@ const Header = () => {
         <Link to="/">Reviews</Link>
       </li>
       <li>
-        <Link to="/login">Login</Link>
+        {" "}
+        <Link to="/dashboard">Dashboard</Link>
       </li>
+      {currentUser?.email ? (
+        <li>
+          <Link onClick={handleSignOut}>Sign Out</Link>
+        </li>
+      ) : (
+        <li>
+          <Link to="/login">Login</Link>
+        </li>
+      )}
     </>
   );
   return (

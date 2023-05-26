@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import SignUp from "../Pages/SignUp/SignUp";
 import { AuthContext } from "../AuthProvider/AuthProvider";
 
@@ -10,21 +10,27 @@ const Login = () => {
     handleSubmit,
     formState: { errors }
   } = useForm();
+  let navigate = useNavigate();
+  let location = useLocation();
+  let from = location.state?.from?.pathname || "/";
 
   const { signInWithEmail } = useContext(AuthContext);
+  const [loginError, setLoginError] = useState("");
+
   const onSubmit = (data) => {
-    console.log(data);
+    setLoginError("");
     signInWithEmail(data.email, data.password)
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
-        console.log(user);
+        // console.log(user);
+        // toast("User Logged In");
+        navigate(from, { replace: true });
+
         // ...
       })
       .catch((error) => {
-        console.log(error);
-        const errorCode = error.code;
-        const errorMessage = error.message;
+        setLoginError(error.message);
       });
   };
   return (
@@ -73,6 +79,10 @@ const Login = () => {
           </div>
           <br />
           <button class="btn btn-primary w-96">Button</button>{" "}
+          <div>
+            {" "}
+            {loginError && <p className="text-red-700">{loginError}</p>}
+          </div>
         </form>
         <p>
           New to Doctor's Portal? <Link to="/signup">Register</Link>

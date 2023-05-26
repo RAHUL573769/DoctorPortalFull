@@ -1,7 +1,8 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
 import { GoogleAuthProvider } from "firebase/auth";
+import { toast } from "react-hot-toast";
 
 const SignUp = () => {
   const {
@@ -12,6 +13,7 @@ const SignUp = () => {
 
   const { auth, signInGooglePopUp, createUser } = useContext(AuthContext);
   const provider1 = new GoogleAuthProvider();
+  const { signUpError, setSignUpError } = useState("");
   const onSubmit = (data) => {
     console.log(data);
 
@@ -20,12 +22,14 @@ const SignUp = () => {
         // Signed in
         const user = userCredential.user;
         console.log(user);
+        toast("User Created Succsfully");
         // ...
       })
       .catch((error) => {
         console.log(error);
-        const errorCode = error.code;
+
         const errorMessage = error.message;
+        setSignUpError(errorMessage);
         // ..
       });
   };
