@@ -2,7 +2,7 @@ import React from "react";
 
 const SingleAppointment = ({ appointment, setTreatments }) => {
   const { name, slots } = appointment;
-  console.log(appointment);
+  // console.log(appointment);
   return (
     <div>
       <div className="card w-96 bg-base-100 shadow-xl">

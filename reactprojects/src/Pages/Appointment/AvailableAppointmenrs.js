@@ -14,13 +14,22 @@ const AvailableAppointmenrs = ({ selected, setSelected }) => {
   //   }
   // });
 
-  const [appointments, setAppointments] = useState([]);
+  // const [appointments, setAppointments] = useState([]);
   const [treatments, setTreatments] = useState(null);
-  useEffect(() => {
-    fetch("http://localhost:9000/appointmentOptions")
-      .then((res) => res.json())
-      .then((data) => setAppointments(data));
-  }, []);
+  // useEffect(() => {
+  //   fetch("http://localhost:9000/appointmentOptions")
+  //     .then((res) => res.json())
+  //     .then((data) => setAppointments(data));
+  // }, []);
+
+  const { data: appointments = [] } = useQuery({
+    queryKey: ["appointment"],
+    queryFn: async () => {
+      const res = await fetch("http://localhost:9000/appointmentOptions");
+      const data = await res.json();
+      return data;
+    }
+  });
 
   return (
     <div>

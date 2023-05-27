@@ -1,11 +1,12 @@
 import { format } from "date-fns";
 import React, { useContext } from "react";
 import { AuthContext } from "../../../AuthProvider/AuthProvider";
+import { toast } from "react-hot-toast";
 
 const Modal = ({ treatments, selected }) => {
   const { name, slots } = treatments;
   const { currentUser } = useContext(AuthContext);
-  console.log(currentUser);
+  // console.log(currentUser);
   const date = format(selected, "PP");
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -14,14 +15,27 @@ const Modal = ({ treatments, selected }) => {
     const name = e.target.name.value;
     const phone = e.target.phone.value;
 
-    const booking = {
+    const data = {
       selectedDate: date,
       name,
       slot,
       email,
       phone
     };
-    console.log(booking);
+
+    fetch("http://localhost:9000/bookings", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: JSON.stringify(data) // body data type must match "Content-Type" header
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        toast.success("Booking Data Added Succesfully");
+      });
   };
   return (
     <div>
@@ -52,20 +66,20 @@ const Modal = ({ treatments, selected }) => {
               <input
                 type="text"
                 name="name"
-                placeholder="Type here"
+                placeholder="Write Name"
                 className="input w-full"
               />
               <input
                 type="text"
                 disabled
                 name="email"
-                value={currentUser.email}
+                value={currentUser?.email}
                 placeholder="Type here"
                 className="input w-full"
               />
               <input
-                type="text"
-                placeholder="Type here"
+                type="number"
+                placeholder="Type Phone"
                 name="phone"
                 className="input w-full"
               />

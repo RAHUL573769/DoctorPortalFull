@@ -40,10 +40,25 @@ async function run() {
       .db("doctorsPortal2")
       .collection("appointmentOption2");
 
+    const bookingCollection = client
+      .db("doctorsPortal2")
+      .collection("bookings");
+
     app.get("/appointmentOptions", async (req, res) => {
       const query = {};
       const options = await appointmentOptionCollection.find(query).toArray();
       res.send(options);
+    });
+    app.get("/bookings", async (req, res) => {
+      const query = {};
+      const options = await bookingCollection.find(query).toArray();
+      res.send(options);
+    });
+    app.post("/bookings", async (req, res) => {
+      const booking = req.body;
+
+      const data = await bookingCollection.insertOne(booking);
+      res.send(data);
     });
 
     // Send a ping to confirm a successful connection

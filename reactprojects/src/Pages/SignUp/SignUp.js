@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
 import { GoogleAuthProvider } from "firebase/auth";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const {
@@ -10,10 +11,10 @@ const SignUp = () => {
     handleSubmit,
     formState: { errors }
   } = useForm();
-
+  const navigate = useNavigate();
   const { auth, signInGooglePopUp, createUser } = useContext(AuthContext);
   const provider1 = new GoogleAuthProvider();
-  const { signUpError, setSignUpError } = useState("");
+  const [signUpError, setSignUpError] = useState("");
   const onSubmit = (data) => {
     console.log(data);
 
@@ -23,6 +24,7 @@ const SignUp = () => {
         const user = userCredential.user;
         console.log(user);
         toast("User Created Succsfully");
+        navigate("/");
         // ...
       })
       .catch((error) => {
@@ -114,6 +116,7 @@ const SignUp = () => {
             Button
           </button>
         </form>
+        {signUpError && <p>{signUpError}</p>}
         <button onClick={handleGoogleSignUp}>Continue with Google</button>
       </div>
     </div>
