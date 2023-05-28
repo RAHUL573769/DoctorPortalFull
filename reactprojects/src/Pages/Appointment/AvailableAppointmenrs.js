@@ -16,6 +16,8 @@ const AvailableAppointmenrs = ({ selected, setSelected }) => {
 
   // const [appointments, setAppointments] = useState([]);
   const [treatments, setTreatments] = useState(null);
+
+  const date = format(selected, "PP");
   // useEffect(() => {
   //   fetch("http://localhost:9000/appointmentOptions")
   //     .then((res) => res.json())
@@ -23,9 +25,11 @@ const AvailableAppointmenrs = ({ selected, setSelected }) => {
   // }, []);
 
   const { data: appointments = [] } = useQuery({
-    queryKey: ["appointment"],
+    queryKey: ["appointment", date],
     queryFn: async () => {
-      const res = await fetch("http://localhost:9000/appointmentOptions");
+      const res = await fetch(
+        `http://localhost:9000/appointmentOptions?date=${date}`
+      );
       const data = await res.json();
       return data;
     }

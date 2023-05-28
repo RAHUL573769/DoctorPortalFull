@@ -4,7 +4,7 @@ import { AuthContext } from "../../../AuthProvider/AuthProvider";
 import { toast } from "react-hot-toast";
 
 const Modal = ({ treatments, selected }) => {
-  const { name, slots } = treatments;
+  const { name: treatmentName, slots } = treatments;
   const { currentUser } = useContext(AuthContext);
   // console.log(currentUser);
   const date = format(selected, "PP");
@@ -17,7 +17,9 @@ const Modal = ({ treatments, selected }) => {
 
     const data = {
       selectedDate: date,
-      name,
+      treatment: treatmentName,
+      patient: name,
+
       slot,
       email,
       phone
@@ -48,7 +50,7 @@ const Modal = ({ treatments, selected }) => {
           >
             ✕
           </label>
-          <h3 className="text-lg font-bold">{name}</h3>
+          <h3 className="text-lg font-bold">{treatmentName}</h3>
           <p className="py-4">
             <form onSubmit={handleSubmit} className="grid gap-6" action="">
               <input
