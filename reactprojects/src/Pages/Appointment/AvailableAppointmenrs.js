@@ -24,7 +24,7 @@ const AvailableAppointmenrs = ({ selected, setSelected }) => {
   //     .then((data) => setAppointments(data));
   // }, []);
 
-  const { data: appointments = [] } = useQuery({
+  const { data: appointments = [], refetch } = useQuery({
     queryKey: ["appointment", date],
     queryFn: async () => {
       const res = await fetch(
@@ -49,7 +49,11 @@ const AvailableAppointmenrs = ({ selected, setSelected }) => {
         ))}
       </div>
       {treatments && (
-        <Modal selected={selected} treatments={treatments}></Modal>
+        <Modal
+          refetch={refetch}
+          selected={selected}
+          treatments={treatments}
+        ></Modal>
       )}
     </div>
   );

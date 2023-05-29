@@ -85,7 +85,14 @@ const Header = () => {
           <ul className="menu menu-horizontal px-1">{menItems}</ul>
         </div>
         <div className="navbar-end">
-          <Link className="btn">Get started</Link>
+          <label tabIndex={2} className="btn btn-ghost lg:hidden">
+            <label
+              htmlFor="my-drawer-2"
+              className="btn btn-primary drawer-button lg:hidden"
+            >
+              Open Dashboard
+            </label>
+          </label>
         </div>
       </div>
     </div>

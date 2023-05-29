@@ -48,7 +48,9 @@ async function run() {
       const query = {};
       const date = req.query.date;
       console.log(date);
+
       const options = await appointmentOptionCollection.find(query).toArray();
+
       const bookingQuery = {
         selectedDate: date
       };
@@ -67,18 +69,83 @@ async function run() {
           (book) => book.treatment === option.name
         );
         const bookedSlot = optionBooked1.map((book) => book.slot);
-        console.log(date, option.name, bookedSlot);
+        const remainingSlots = option.slots.filter(
+          (slot) => !bookedSlot.includes(slot)
+        );
+        option.slots = remainingSlots;
+        // console.log(date, option.name, bookedSlot, remainingSlots.length);
       });
       res.send(options);
     });
+
+    // app.get("/appointmentOptions/v2", async (req, res) => {
+    //   const date = req.query.date;
+    //   const options = await appointmentOptionCollection
+    //     .aggregate([
+    //       {
+    //         $lookup: {
+    //           from: "bookings",
+    //           localField: "name",
+    //           foreignField: "treatment",
+    //           pipeline: [
+    //             {
+    //               $match: {
+    //                 $expr: {
+    //                   $eq: ["$selectedDate", date]
+    //                 }
+    //               }
+    //             }
+    //           ],
+    //           as: "booked"
+    //         }
+    //       },
+    //       {
+    //         $project: {
+    //           name: 1,
+    //           slot: 1,
+    //           $map: {
+    //             input: "$booked",
+    //             as: "book",
+    //             in: "$book.slot"
+    //           }
+    //         }
+    //       },
+    //       {
+    //         $project: {
+    //           name: 1,
+    //           slots: {
+    //             $setDifference: ["$slot", "$booked"]
+    //           }
+    //         }
+    //       }
+    //     ])
+    //     .toArray();
+    //   res.send(options);
+    // });
     app.get("/bookings", async (req, res) => {
-      const query = {};
+      const userEmail = req.query.email;
+      const query = {
+        email: userEmail
+      };
       const options = await bookingCollection.find(query).toArray();
       res.send(options);
     });
     app.post("/bookings", async (req, res) => {
       const booking = req.body;
 
+      // console.log(booking);
+
+      const query = {
+        selectedDate: booking.selectedDate,
+        treatment: booking.treatment
+      };
+
+      const count = await bookingCollection.find(query).toArray();
+
+      if (count.length) {
+        const message = `You have ${booking.treatment} booking on ${booking.selectedDate}`;
+        return res.send({ acknowledged: false, message });
+      }
       const data = await bookingCollection.insertOne(booking);
       res.send(data);
     });

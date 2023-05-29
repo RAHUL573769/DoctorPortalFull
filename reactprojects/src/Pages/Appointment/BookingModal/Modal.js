@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import { AuthContext } from "../../../AuthProvider/AuthProvider";
 import { toast } from "react-hot-toast";
 
-const Modal = ({ treatments, selected }) => {
+const Modal = ({ treatments, selected, refetch }) => {
   const { name: treatmentName, slots } = treatments;
   const { currentUser } = useContext(AuthContext);
   // console.log(currentUser);
@@ -36,7 +36,13 @@ const Modal = ({ treatments, selected }) => {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        toast.success("Booking Data Added Succesfully");
+
+        if (data.acknowledged) {
+          toast.success("Booking Data Added Successfully");
+          refetch();
+        } else {
+          toast.error(data.message);
+        }
       });
   };
   return (
