@@ -2,8 +2,8 @@ import React from "react";
 
 const SingleMyAppointment = ({ booking, index }) => {
   const { patient, selectedDate, treatment } = booking;
-  console.log(booking);
-  console.log(index);
+  // console.log(booking);
+  // console.log(index);
   return (
     <div>
       <div className="overflow-x-auto">

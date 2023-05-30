@@ -24,8 +24,8 @@ const MyAppointment = () => {
           <tr>
             <th>Index</th>
             <th>Name</th>
-            <th>Job</th>
-            <th>Favorite Color</th>
+            <th>Date</th>
+            <th>Name of Treatment</th>
           </tr>
         </thead>
       </table>

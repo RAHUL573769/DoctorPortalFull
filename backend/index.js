@@ -13,7 +13,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // parse application/json
-app.use(bodyParser.json());
+app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -29,7 +29,7 @@ const client = new MongoClient(uri, {
     deprecationErrors: true
   }
 });
-console.log(uri);
+// console.log(uri);
 
 async function run() {
   try {
@@ -44,10 +44,12 @@ async function run() {
       .db("doctorsPortal2")
       .collection("bookings");
 
+    const userCollection = client.db("doctorsPortal2").collection("users");
+
     app.get("/appointmentOptions", async (req, res) => {
       const query = {};
       const date = req.query.date;
-      console.log(date);
+      // console.log(date);
 
       const options = await appointmentOptionCollection.find(query).toArray();
 
@@ -129,6 +131,20 @@ async function run() {
       };
       const options = await bookingCollection.find(query).toArray();
       res.send(options);
+    });
+
+    app.get("/users", async (req, res) => {
+      const query = {};
+      const data = await userCollection.find(query).toArray();
+      res.send(data);
+    });
+
+    app.post("/users", async (req, res) => {
+      console.log(req.body);
+      const data = req.body;
+      const result2 = await userCollection.insertOne(data);
+
+      res.send(result2);
     });
     app.post("/bookings", async (req, res) => {
       const booking = req.body;

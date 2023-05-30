@@ -16,7 +16,7 @@ const SignUp = () => {
   const provider1 = new GoogleAuthProvider();
   const [signUpError, setSignUpError] = useState("");
   const onSubmit = (data) => {
-    console.log(data);
+    // console.log(data);
 
     createUser(data.email, data.password)
       .then((userCredential) => {
@@ -25,6 +25,7 @@ const SignUp = () => {
         console.log(user);
         toast("User Created Succsfully");
         navigate("/");
+        saveUser(user.displayName, user.email);
         // ...
       })
       .catch((error) => {
@@ -33,6 +34,25 @@ const SignUp = () => {
         const errorMessage = error.message;
         setSignUpError(errorMessage);
         // ..
+      });
+  };
+
+  const saveUser = (name, email) => {
+    const data = {
+      name,
+      email
+    };
+    fetch("http://localhost:9000/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: JSON.stringify(data) // body data type must match "Content-Type" header
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
       });
   };
 
