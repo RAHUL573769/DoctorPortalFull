@@ -1,5 +1,5 @@
 const { MongoClient, ServerApiVersion } = require("mongodb");
-
+var jwt = require("jsonwebtoken");
 const express = require("express");
 const cors = require("cors");
 const app = express();
@@ -132,7 +132,23 @@ async function run() {
       const options = await bookingCollection.find(query).toArray();
       res.send(options);
     });
-
+    app.get("/jwt", async (req, res) => {
+      const data = req.query.email;
+      const mongoEmail = { email: data };
+      const email = await userCollection.findOne(mongoEmail);
+      if (email) {
+        const token = jwt.sign(
+          {
+            data: email
+          },
+          process.env.ACCESS_TOKEN,
+          { expiresIn: 60 * 60 }
+        );
+        return res.send({ accessToken: token });
+      } else {
+        return res.status(403).send("invalid user");
+      }
+    });
     app.get("/users", async (req, res) => {
       const query = {};
       const data = await userCollection.find(query).toArray();
