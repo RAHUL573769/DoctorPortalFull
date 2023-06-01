@@ -31,6 +31,26 @@ const client = new MongoClient(uri, {
 });
 // console.log(uri);
 
+function verifyJwt(req, res, next) {
+  const authHeader = req.headers.authorization;
+
+  console.log("35", authHeader);
+
+  if (!authHeader) {
+    return res.send("Unauthorized access");
+  } else {
+    const token = authHeader.split(" ")[1];
+    jwt.verify(token, process.env.ACCESS_TOKEN, (err, decoded) => {
+      if (err) {
+        return res.send("Forbidden Access");
+      }
+      req.decoded = decoded;
+      next();
+    });
+  }
+  // console.log(req);
+}
+
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
@@ -124,8 +144,16 @@ async function run() {
     //     .toArray();
     //   res.send(options);
     // });
-    app.get("/bookings", async (req, res) => {
+    app.get("/bookings", verifyJwt, async (req, res) => {
       const userEmail = req.query.email;
+
+      const decodedEmail = req.decoded.data.email;
+      console.log(userEmail, decodedEmail);
+      if (userEmail != decodedEmail) {
+        return res.send("Forbodden Acccess");
+      }
+
+      // console.log(req.headers.authorization);
       const query = {
         email: userEmail
       };
@@ -135,7 +163,9 @@ async function run() {
     app.get("/jwt", async (req, res) => {
       const data = req.query.email;
       const mongoEmail = { email: data };
-      const email = await userCollection.findOne(mongoEmail);
+      console.log(data, mongoEmail);
+      const email = await userCollection.findOne({ email: data });
+      // console.log(email);
       if (email) {
         const token = jwt.sign(
           {

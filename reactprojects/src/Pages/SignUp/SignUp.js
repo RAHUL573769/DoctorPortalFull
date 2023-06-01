@@ -4,6 +4,7 @@ import { AuthContext } from "../../AuthProvider/AuthProvider";
 import { GoogleAuthProvider } from "firebase/auth";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import useToken from "./../../hooks/useToken";
 
 const SignUp = () => {
   const {
@@ -12,9 +13,16 @@ const SignUp = () => {
     formState: { errors }
   } = useForm();
   const navigate = useNavigate();
+  const [crestedEmail, setCreatedEmail] = useState("");
+  const [token] = useToken(crestedEmail);
   const { auth, signInGooglePopUp, createUser } = useContext(AuthContext);
   const provider1 = new GoogleAuthProvider();
   const [signUpError, setSignUpError] = useState("");
+
+  if (token) {
+    navigate("/");
+  }
+  console.log(token);
   const onSubmit = (data) => {
     // console.log(data);
 
@@ -53,6 +61,19 @@ const SignUp = () => {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
+        // setCreatedEmail(email);
+        getUserToken(email);
+      });
+  };
+  const getUserToken = (email) => {
+    const url = `http://localhost:9000/jwt?email=${email}`;
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        // console.log(data);
+        if (data.accessToken) {
+          localStorage.setItem("access-token", data.accessToken);
+        }
       });
   };
 

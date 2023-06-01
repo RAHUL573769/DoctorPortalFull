@@ -5,18 +5,23 @@ import SingleMyAppointment from "./SingleMyAppointment";
 
 const MyAppointment = () => {
   const { currentUser } = useContext(AuthContext);
-
+  console.log(currentUser.email);
   const url = `http://localhost:9000/bookings?email=${currentUser?.email}`;
   const { data: bookings = [] } = useQuery({
     queryKey: ["bookings", currentUser?.email],
     queryFn: async () => {
-      const result = await fetch(url);
+      const result = await fetch(url, {
+        headers: {
+          authorization: `bearer ${localStorage.getItem("access-token")}`
+        }
+      });
       const data = await result.json();
 
       return data;
     }
   });
   console.log(bookings);
+
   return (
     <div>
       <table className="table w-full">
