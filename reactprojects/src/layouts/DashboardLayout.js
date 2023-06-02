@@ -34,7 +34,7 @@ const DashboardLayout = () => {
               <Link to="/dashboard/appointment">My Appointment</Link>
             </li>
             <li>
-              <Link>Sidebar Item 2</Link>
+              <Link to="/dashboard/allusers">All Users</Link>
             </li>
           </ul>
         </div>
