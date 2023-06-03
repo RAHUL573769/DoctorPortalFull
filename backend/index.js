@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 var jwt = require("jsonwebtoken");
 const express = require("express");
 const cors = require("cors");
@@ -33,8 +33,8 @@ const client = new MongoClient(uri, {
 
 function verifyJwt(req, res, next) {
   const authHeader = req.headers.authorization;
-
-  console.log("35", authHeader);
+  console.log(req.headers);
+  // console.log("35", authHeader);
 
   if (!authHeader) {
     return res.send("Unauthorized access");
@@ -179,6 +179,27 @@ async function run() {
         return res.status(403).send("invalid user");
       }
     });
+
+    app.put("/users/admin/:id", verifyJwt, async (req, res) => {
+      console.log("inside put", req);
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const option = {
+        upsert: true
+      };
+      const updateDocument = {
+        $set: {
+          role: "admin"
+        }
+      };
+      const result = await userCollection.updateOne(
+        filter,
+
+        updateDocument,
+        option
+      );
+      res.send(result);
+    });
     app.get("/users", async (req, res) => {
       const query = {};
       const data = await userCollection.find(query).toArray();
@@ -186,7 +207,7 @@ async function run() {
     });
 
     app.post("/users", async (req, res) => {
-      console.log(req.body);
+      // console.log(req.body);
       const data = req.body;
       const result2 = await userCollection.insertOne(data);
 
